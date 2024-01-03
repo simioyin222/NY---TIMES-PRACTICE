@@ -1,33 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useReducer } from 'react';
+import topStoriesReducer from './reducers/top-stories-reducer'; // Assuming this is the path
+import { getTopStoriesSuccess, getTopStoriesFailure } from './actions'; // Assuming this is the path
+
+const initialState = {
+  isLoaded: false,
+  topStories: [],
+  error: null
+};
 
 function TopStories() {
-  const [error, setError] = useState(null);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [topStories, setTopStories] = useState([]);
+  const [state, dispatch] = useReducer(topStoriesReducer, initialState);
 
   useEffect(() => {
     fetch(`https://api.nytimes.com/svc/topstories/v2/home.json?api-key=${process.env.REACT_APP_API_KEY}`)
       .then(response => response.json())
       .then(
         (jsonifiedResponse) => {
-          setTopStories(jsonifiedResponse.results);
-          setIsLoaded(true);
+          dispatch(getTopStoriesSuccess(jsonifiedResponse.results));
         },
         (error) => {
-          setError(error);
-          setIsLoaded(true);
+          dispatch(getTopStoriesFailure(error));
         }
       );
   }, []);
 
-  if (error) {
-    return <div>Error: {error.message}</div>;
-  } else if (!isLoaded) {
+  if (state.error) {
+    return <div>Error: {state.error.message}</div>;
+  } else if (!state.isLoaded) {
     return <div>Loading...</div>;
   } else {
     return (
       <ul>
-        {topStories.map((story, index) => (
+        {state.topStories.map((story, index) => (
           <li key={index}>
             <h3>{story.title}</h3>
             <p>{story.abstract}</p>
