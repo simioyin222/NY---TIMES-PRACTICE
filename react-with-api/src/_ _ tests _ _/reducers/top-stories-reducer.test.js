@@ -24,6 +24,48 @@ describe('topStoriesReducer', () => {
       isLoaded: true,
       topStories: topStories
     });
-)};
-);
+  });
+
+  test('Should update state on GET_TOP_STORIES_FAILURE action', () => {
+    const error = 'Error message';
+    action = {
+      type: c.GET_TOP_STORIES_FAILURE,
+      error
+    };
+    expect(topStoriesReducer(initialState, action)).toEqual({
+      ...initialState,
+      isLoaded: true,
+      error: error
+    });
+  });
+});
+2. Reducer Function
+File: src/reducers/top-stories-reducer.js
+
+This file will define your reducer:
+
+javascript
+Copy code
+import * as c from '../actions/ActionTypes';
+
+const topStoriesReducer = (state = { isLoaded: false, topStories: [], error: null }, action) => {
+  switch (action.type) {
+    case c.GET_TOP_STORIES_SUCCESS:
+      return {
+        ...state,
+        isLoaded: true,
+        topStories: action.topStories
+      };
+    case c.GET_TOP_STORIES_FAILURE:
+      return {
+        ...state,
+        isLoaded: true,
+        error: action.error
+      };
+    default:
+      return state;
+  }
+};
+
+export default topStoriesReducer;
   
