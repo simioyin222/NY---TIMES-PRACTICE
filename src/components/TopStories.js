@@ -2,7 +2,6 @@ import React, { useEffect, useReducer } from 'react';
 import topStoriesReducer from '../reducers/top-stories-reducer';
 import { getTopStoriesSuccess, getTopStoriesFailure } from '../actions';
 
-
 const initialState = {
   isLoaded: false,
   topStories: [],
@@ -25,22 +24,24 @@ function TopStories() {
       );
   }, []);
 
+  if (!state.isLoaded) {
+    return <div>Loading...</div>;
+  }
+
   if (state.error) {
     return <div>Error: {state.error.message}</div>;
-  } else if (!state.isLoaded) {
-    return <div>Loading...</div>;
-  } else {
-    return (
-      <ul>
-        {state.topStories.map((story, index) => (
-          <li key={index}>
-            <h3>{story.title}</h3>
-            <p>{story.abstract}</p>
-          </li>
-        ))}
-      </ul>
-    );
   }
+
+  return (
+    <ul>
+      {state.topStories.map((story, index) => (
+        <li key={index}>
+          <h3>{story.title}</h3>
+          <p>{story.abstract}</p>
+        </li>
+      ))}
+    </ul>
+  );
 }
 
 export default TopStories;
