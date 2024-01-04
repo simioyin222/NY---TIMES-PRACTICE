@@ -8,4 +8,4 @@ const topStoriesReducer = (state = { isLoaded: false, topStories: [], error: nul
         isLoaded: true,
         topStories: action.topStories
       };
-    }}; 
+    }};
