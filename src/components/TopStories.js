@@ -1,6 +1,7 @@
 import React, { useEffect, useReducer } from 'react';
-import topStoriesReducer from './reducers/top-stories-reducer'; // Assuming this is the path
-import { getTopStoriesSuccess, getTopStoriesFailure } from './actions'; // Assuming this is the path
+import topStoriesReducer from '../reducers/top-stories-reducer';
+import { getTopStoriesSuccess, getTopStoriesFailure } from '../actions';
+
 
 const initialState = {
   isLoaded: false,

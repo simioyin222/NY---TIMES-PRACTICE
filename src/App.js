@@ -1,6 +1,5 @@
 import React from 'react';
-import TopStories from './component/TopStories';
-
+import TopStories from './components/TopStories';
 function App() {
   return (
     <div>
