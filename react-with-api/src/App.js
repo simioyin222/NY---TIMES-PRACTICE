@@ -1,5 +1,5 @@
 import React from 'react';
-import TopStories from './TopStories';
+import TopStories from './component/TopStories';
 
 function App() {
   return (
