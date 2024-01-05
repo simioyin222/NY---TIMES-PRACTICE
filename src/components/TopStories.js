@@ -1,6 +1,6 @@
 import React, { useEffect, useReducer } from 'react';
-import topStoriesReducer from '../reducers/top-stories-reducer';
-import { getTopStoriesSuccess, getTopStoriesFailure } from '../actions';
+import topStoriesReducer from './../reducers/top-stories-reducer';
+import { getTopStoriesFailure, getTopStoriesSuccess } from './../actions/index';
 
 const initialState = {
   isLoaded: false,
@@ -8,45 +8,47 @@ const initialState = {
   error: null
 };
 
-function TopStories() {
+function TopStories () {
   const [state, dispatch] = useReducer(topStoriesReducer, initialState);
 
   useEffect(() => {
     fetch(`https://api.nytimes.com/svc/topstories/v2/home.json?api-key=${process.env.REACT_APP_API_KEY}`)
-      .then(response => response.json())
-      .then(
-        (jsonifiedResponse) => {
-          dispatch(getTopStoriesSuccess(jsonifiedResponse.results));
-        },
-        (error) => {
-          dispatch(getTopStoriesFailure(error));
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`${response.status}: ${response.statusText}`);
+        } else {
+          return response.json()
         }
-      );
+      })
+      .then((jsonifiedResponse) => {
+        dispatch(getTopStoriesSuccess(jsonifiedResponse.results));
+      })
+      .catch((error) => {
+        dispatch(getTopStoriesFailure(error.message));
+      });
   }, []);
 
-  if (!state.isLoaded) {
-    return <div>Loading...</div>;
+  const { error, isLoaded, topStories } = state;
+
+  if (error) {
+    return <h1>Error: {error}</h1>;
+  } else if (!isLoaded) {
+    return <h1>...Loading...</h1>;
+  } else {
+    return (
+      <React.Fragment>
+        <h1>Top Stories</h1>
+        <ul>
+          {topStories.map((article, index) =>
+            <li key={index}>
+              <h3>{article.title}</h3>
+              <p>{article.abstract}</p>
+            </li>
+          )}
+        </ul>
+      </React.Fragment>
+    );
   }
-
-  if (state.error) {
-    return <div>Error: {state.error.message}</div>;
-  }
-
-
-  if (!state.topStories || !Array.isArray(state.topStories)) {
-    return <div>No stories available.</div>;
-  }
-
-  return (
-    <ul>
-      {state.topStories.map((story, index) => (
-        <li key={index}>
-          <h3>{story.title}</h3>
-          <p>{story.abstract}</p>
-        </li>
-      ))}
-    </ul>
-  );
 }
 
 export default TopStories;
