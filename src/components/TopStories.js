@@ -32,6 +32,11 @@ function TopStories() {
     return <div>Error: {state.error.message}</div>;
   }
 
+
+  if (!state.topStories || !Array.isArray(state.topStories)) {
+    return <div>No stories available.</div>;
+  }
+
   return (
     <ul>
       {state.topStories.map((story, index) => (
